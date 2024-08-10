@@ -42,8 +42,8 @@ sourceoptions:
 		<form action="{{site.baseurl}}/ENABLE_JAVASCRIPT" id="query">
 			<h2>Return results with...</h2>
 			<ul>
-				{% for option in page.asoptions %}
-				{% include as.html name=option.name description=option.description options=page.queryoptions %}
+				{% for option in site.data.options.as %}
+				{% include as.html name=option.name description=option.description options=site.data.options.query %}
 				{% endfor %}
 				<li>
 					Creation date from
@@ -54,7 +54,7 @@ sourceoptions:
 			</ul>
 			<h2>Return results from...</h2>
 			<ul>
-				{% for option in page.sourceoptions %}
+				{% for option in site.data.options.source %}
 				{% include source.html source=option.source name=option.name %}
 				{% endfor %}
 			</ul>
