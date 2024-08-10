@@ -1,0 +1,78 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="/watchdog/styles.css" />
+	</head>
+	<body>
+		<noscript>Javascript is needed to craft the query when submitted</noscript>
+		<h1>Watchdog Search :)</h1>
+		<hr />
+		<form action="/watchdog/ENABLE_JAVASCRIPT" id="query">
+			<h2>Return results with...</h2>
+			<ul>
+				<li>
+					<label for="as_q">All these words</label>
+					<input type="search" id="as_q" name="as_q" />
+					in the
+					<select id="as_q_occt" name="as_q_occt">
+						<option value="">page</option>
+						<option value="title">title</option>
+						<option value="text">body</option>
+						<option value="url">url</option>
+						<option value="link">links</option>
+					</select>
+				</li>
+				<li>
+					<label for="as_epq">This exact word or phrase</label>
+					<input type="search" id="as_epq" name="as_epq" />
+					in the
+					<select id="as_epq_occt" name="as_epq_occt">
+						<option value="">page</option>
+						<option value="title">title</option>
+						<option value="text">body</option>
+						<option value="url">url</option>
+						<option value="link">links</option>
+					</select>
+				</li>
+				<li>
+					<label for="as_oq">Any of these words</label>
+					<input type="search" id="as_oq" name="as_oq" />
+					in the
+					<select id="as_oq_occt" name="as_oq_occt">
+						<option value="">page</option>
+						<option value="title">title</option>
+						<option value="text">body</option>
+						<option value="url">url</option>
+						<option value="link">links</option>
+					</select>
+				</li>
+				<li>
+					<label for="as_eq">None of these words</label>
+					<input type="search" id="as_eq" name="as_eq" />
+					in the
+					<select id="as_eq_occt" name="as_eq_occt">
+						<option value="">page</option>
+						<option value="title">title</option>
+						<option value="text">body</option>
+						<option value="url">url</option>
+						<option value="link">links</option>
+					</select>
+				</li>
+				<li>
+					<label for="as_qdr">Creation dates from</label>
+					<input type="date" id="as_qdrlo" name="as_qdrlo" />
+					to
+					<input type="date" id="as_qdrhi" name="as_qdrhi" />
+				</li>
+			</ul>
+			<h2>Return results from...</h2>
+			<ul>
+				<li>
+					<input type="checkbox" id="source_npr" name="source_npr" />
+					<label for="source_npr">NPR</label>
+				</li>
+			</ul>
+			<button type="submit" id="search">Search!</button>
+		</form>
+	</body>
+	<script src="/watchdog/index.js"></script>
+</html>
