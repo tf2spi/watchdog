@@ -1,14 +1,14 @@
 query:
-  - name: title
-    parameter: intitle
-  - name: links
-    parameter: inlinks
-  - name: url
-    parameter: inurl
   - name: page
-    parameter:
+    google: ""
+  - name: title
+    google: "intitle:"
+  - name: links
+    google: "inlinks:"
+  - name: url
+    google: "inurl:"
   - name: body
-    parameter: intext
+    google: "intext:"
 as:
   - name: as_q
     description: "All these words"
