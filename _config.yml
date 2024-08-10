@@ -1,0 +1,3 @@
+---
+exclude: ['Gemfile', 'Gemfile.lock', 'README.md', 'UNLICENSE']
+baseurl: /watchdog

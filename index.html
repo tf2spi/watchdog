@@ -1,0 +1,67 @@
+---
+queryoptions:
+  - name: title
+    parameter: intitle
+  - name: links
+    parameter: inlinks
+  - name: url
+    parameter: inurl
+  - name: page
+    parameter:
+  - name: body
+    parameter: intext
+asoptions:
+  - name: as_q
+    description: "All these words"
+  - name: as_epq
+    description: "This exact word or phrase"
+  - name: as_oq
+    description: "Any of these words"
+  - name: as_eq
+    description: "None of these words"
+sourceoptions:
+  - name: NPR
+    source: npr
+  - name: "New York Times"
+    source: nyt
+---
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Watchdog</title>
+		<link rel="stylesheet" href="{{site.baseurl}}/styles.css" />
+	</head>
+	<body>
+		<h1>Watchdog 🐶</h1>
+		<noscript>
+			Watchdog relies on <a href="{{site.baseurl}}/index.js">Javascript</a> to create the search query.
+			<br />
+			Enable it for this site via Chromium or NoScript settings.
+		</noscript>
+		<form action="{{site.baseurl}}/ENABLE_JAVASCRIPT" id="query">
+			<h2>Return results with...</h2>
+			<ul>
+				{% for option in page.asoptions %}
+				{% include as.html name=option.name description=option.description options=page.queryoptions %}
+				{% endfor %}
+				<li>
+					Creation date from
+					<input type="date" id="as_qdrlo" name="as_qdrlo" />
+					to
+					<input type="date" id="as_qdrhi" name="as_qdrhi" />
+				</li>
+			</ul>
+			<h2>Return results from...</h2>
+			<ul>
+				{% for option in page.sourceoptions %}
+				{% include source.html source=option.source name=option.name %}
+				{% endfor %}
+			</ul>
+			<button type="submit" id="search">Search!</button>
+		</form>
+		<hr />
+		<a href="https://github.com/tf2spi/watchdog.git">Watchdog's Source Code</a>
+		<script src="{{site.baseurl}}/index.js"></script>
+	</body>
+</html>
