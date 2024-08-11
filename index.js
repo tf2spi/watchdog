@@ -43,11 +43,10 @@ document.getElementById('query').addEventListener('submit', (ev) => {
 	as_q &&= ('('+as_q+')');
 
 	// Look for exact phrase
-	// Google has '[]' which function the same as quotes
 	[occt, terms] = as_keys.as_epq;
 	occt = googleSearchOps[occt];
 	let as_epq = terms.join(' ');
-	as_epq &&= (occt+'['+terms.join(' ')+']');
+	as_epq &&= (occt+'"'+terms.join(' ').replaceAll('"','')+'"');
 
         // Terms where any of them appear
 	[occt, terms] = as_keys.as_oq;
