@@ -35,13 +35,14 @@ document.getElementById('query').addEventListener('submit', (ev) => {
 		lex(document.getElementById(as).value)
 	]);
 
-        // Google search has "allin*" operators to optimize query size
+	// Terms which must show up in document
 	let occt, terms;
 	[occt, terms] = as_keys.as_q;
 	occt = googleSearchOps[occt];
-	let as_q = (occt && 'all')+occt+terms.join(' ');
+	let as_q = terms.map(s => occt+s).join(' ');
 	as_q &&= ('('+as_q+')');
 
+	// Look for exact phrase
 	// Google has '[]' which function the same as quotes
 	[occt, terms] = as_keys.as_epq;
 	occt = googleSearchOps[occt];
@@ -71,16 +72,12 @@ document.getElementById('query').addEventListener('submit', (ev) => {
 	as_sites = as_sites && ('('+as_sites+')'); 
 	let query = encodeURIComponent([
 		as_q,
-		as_epq,
 		as_oq,
+		as_epq,
 		as_eq,
 		as_qdrlo,
 		as_qdrhi,
 		as_sites,
 	].join(' '));
-
-	console.log(decodeURIComponent(query));
-	console.log(document.getElementById('as_qdrlo').value);
-	console.log(document.getElementById('as_qdrhi').value);
 	window.location.href = 'https://google.com/search?q=' + query;
 });
