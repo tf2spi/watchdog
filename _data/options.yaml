@@ -25,3 +25,12 @@ source:
   - name: "New York Times"
     source: nyt
     url: nytimes.com
+  - name: "Human Rights Watch"
+    source: hrw
+    url: hrw.org
+  - name: "Al Jazeera"
+    source: aljazeera
+    url: aljazeera.com
+  - name: "Associated Press"
+    source: ap
+    url: apnews.com
