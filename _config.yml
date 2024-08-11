@@ -1,3 +1,4 @@
 ---
 exclude: ['Gemfile', 'Gemfile.lock', 'README.md', 'UNLICENSE']
+url: https://tf2spi.github.io/
 baseurl: /watchdog
