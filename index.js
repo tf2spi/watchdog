@@ -45,54 +45,81 @@ const getQueryObject = function() {
 	return query;
 };
 
-const googleQuery = function(query, udm14) {
-	// Terms which must show up in document
+// A lot of the encoding functions for certain search
+// parameters are the same between browsers so put them in
+// separate functions.
+
+// How Google encodes as_q (where all words must show up once)
+const googleQEncode = function(query) {
 	let occt, terms;
 	[occt, terms] = query.as_q;
 	occt = googleSearchOps[occt];
 	let as_q = terms.map(s => occt+s).join(' ');
 	as_q &&= ('('+as_q+')');
+	return as_q;
+};
 
-	// Look for exact phrase
+// How Google encodes as_epq (where the exact phrase must show up)
+const googleEpqEncode = function(query) {
+	let occt, terms;
 	[occt, terms] = query.as_epq;
 	occt = googleSearchOps[occt];
 	let as_epq = terms.join(' ');
 	as_epq &&= (occt+'"'+terms.join(' ').replaceAll('"','')+'"');
+	return as_epq;
+};
 
-        // Terms where any of them appear
+// How Google encodes as_oq (where only one of the words must show up)
+const googleOqEncode = function(query) {
+	let occt, terms;
 	[occt, terms] = query.as_oq;
 	occt = googleSearchOps[occt];
 	let as_oq = terms.map(s => occt+s).join(' OR ');
 	as_oq &&= ('('+as_oq+')');
+	return as_oq;
+}
 
-	// Terms to be excluded
+// How Google encodes as_eq (where none of the words can show up)
+const googleEqEncode = function(query) {
+	let occt, terms;
 	[occt, terms] = query.as_eq;
 	occt = googleSearchOps[occt];
 	let as_eq = terms.map(s => '-'+occt+s).join(' ');
+	return as_eq;
+}
 
-	// Date range
-	let as_qdrlo = query.as_qdrlo && 'after:'+as_qdrlo;
-	let as_qdrhi = query.as_qdrhi && 'before:'+as_qdrhi;
+// How Google encodes as_qdr (date range for results)
+const googleQdrEncode = function(query) {
+	let as_qdrlo = query.as_qdrlo && 'after:'+query.as_qdrlo;
+	let as_qdrhi = query.as_qdrhi && 'before:'+query.as_qdrhi;
+	return as_qdrlo+' '+as_qdrhi;
+}
 
-	// Number ranges
-	let as_n = (query.as_nlo || query.as_nhi) && `${query.as_nlo}..${query.as_nhi}`;
+// How Google encodes as_n (number range for results)
+const googleNEncode = function(query) {
+	return (query.as_nlo || query.as_nhi) && `${query.as_nlo}..${query.as_nhi}`;
+}
 
-	// Sites to limit the search
+// How Google encodes as_sites (sites to limit the search to)
+const googleSitesEncode = function(query) {
 	let as_sites = query.as_sites
 		.map(entry => 'site:'+entry)
 		.join(' OR ');
-	as_sites = as_sites && ('('+as_sites+')'); 
-	let queryStr = encodeURIComponent([
-		as_q,
-		as_n,
-		as_oq,
-		as_epq,
-		as_eq,
-		as_qdrlo,
-		as_qdrhi,
-		as_sites,
-	].join(' '));
+	as_sites = as_sites && ('('+as_sites+')');
+	return as_sites;
+}
 
+const googleQuery = function(query) {
+	// Sites to limit the search
+	let queryStr = encodeURIComponent([
+		googleQEncode(query),
+		googleNEncode(query),
+		googleOqEncode(query),
+		googleEpqEncode(query),
+		googleEqEncode(query),
+		googleQdrEncode(query),
+		googleSitesEncode(query),
+	].join(' '));
 	return 'https://google.com/search?q=' + queryStr;
 }
 
