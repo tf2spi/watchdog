@@ -1,5 +1,6 @@
 ---
 ---
+'use strict';
 const sourcesTranslation = {
 	{% for option in site.data.options.source %}
 	'{{option.source}}': '{{option.url}}',
@@ -60,6 +61,7 @@ const googleQEncode = function(query) {
 };
 
 // How Google encodes as_epq (where the exact phrase must show up)
+// Remove quotes to prevent misinterpretation of queries.
 const googleEpqEncode = function(query) {
 	let occt, terms;
 	[occt, terms] = query.as_epq;
@@ -77,7 +79,7 @@ const googleOqEncode = function(query) {
 	let as_oq = terms.map(s => occt+s).join(' OR ');
 	as_oq &&= ('('+as_oq+')');
 	return as_oq;
-}
+};
 
 // How Google encodes as_eq (where none of the words can show up)
 const googleEqEncode = function(query) {
@@ -86,14 +88,14 @@ const googleEqEncode = function(query) {
 	occt = googleSearchOps[occt];
 	let as_eq = terms.map(s => '-'+occt+s).join(' ');
 	return as_eq;
-}
+};
 
 // How Google encodes as_qdr (date range for results)
 const googleQdrEncode = function(query) {
 	let as_qdrlo = query.as_qdrlo && 'after:'+query.as_qdrlo;
 	let as_qdrhi = query.as_qdrhi && 'before:'+query.as_qdrhi;
 	return as_qdrlo+' '+as_qdrhi;
-}
+};
 
 // How Google encodes as_n (number range for results)
 const googleNEncode = function(query) {
@@ -107,11 +109,24 @@ const googleSitesEncode = function(query) {
 		.join(' OR ');
 	as_sites = as_sites && ('('+as_sites+')');
 	return as_sites;
-}
+};
 
-const googleQuery = function(query) {
-	// Sites to limit the search
-	let queryStr = encodeURIComponent([
+// How Bing encodes as_sites
+const bingSitesEncode = function(query) {
+	let as_sites = query.as_sites
+		.map(entry =>'site:'+entry)
+		.join(' OR ');
+};
+
+// When crafting query strings, we'll likely have
+// redundant spaces that we should replace with one.
+// Even in quotes, most search engines don't care about
+// the exact number spaces.
+const whitespaceRegex = /\s+/g;
+
+// Craft query string for use with Google
+const googleQueryStr = function(query) {
+	return encodeURIComponent([
 		googleQEncode(query),
 		googleNEncode(query),
 		googleOqEncode(query),
@@ -119,16 +134,21 @@ const googleQuery = function(query) {
 		googleEqEncode(query),
 		googleQdrEncode(query),
 		googleSitesEncode(query),
-	].join(' '));
-	return 'https://google.com/search?q=' + queryStr;
-}
+	].join(' ').replace(whitespaceRegex, ' '));
+};
 
 document.getElementById('query').addEventListener('submit', (ev) => {
 	ev.preventDefault();
-	query = getQueryObject();
-	let url = googleQuery(query);
-	if (query.as_engine == 'udm14') {
-		url += '&udm=14';
+	let query = getQueryObject();
+	let url = '';
+	if (query.as_engine == 'google') {
+		url = 'https://google.com/search?q='+googleQueryStr(query);
+	} else if (query.as_engine == 'udm14') {
+		url = 'https://google.com/search?udm=14&q='+googleQueryStr(query);
+	} else if (query.as_engine == 'ecosia') {
+		// Ecosia supposedly uses a Bing backend but Google search
+		// operators work instead of Bing search operators...
+		url = 'https://ecosia.com/search?q='+googleQueryStr(query);
 	}
 	window.location.href = url;
 });

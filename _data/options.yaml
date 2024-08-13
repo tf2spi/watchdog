@@ -39,3 +39,5 @@ engine:
     engine: google
   - name: "Google Web"
     engine: udm14
+  - name: Ecosia
+    engine: ecosia
