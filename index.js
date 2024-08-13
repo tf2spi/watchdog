@@ -1,28 +1,12 @@
----
----
 'use strict';
-const sourcesTranslation = {
-	{% for option in site.data.options.source %}
-	'{{option.source}}': '{{option.url}}',
-	{% endfor %}
-};
-const advancedSearches = [
-	{% for option in site.data.options.as %}
-	'{{option.name}}',
-	{% endfor %}
-];
-const googleSearchOps = {
-	{% for option in site.data.options.query %}
-	'{{option.name}}': '{{option.google}}',
-	{% endfor %}
-};
+import {sourcesTranslation, advancedSearches, googleSearchOps} from './index.js.frontmatter';
 
 const closeQuote = (s) => {
 	return s.includes('"') && s.slice(-1) != '"' ? s.concat('"') : s;
 }
 
 // Lex words that are space separate and phrases surrounded in quotes
-// Search operators like site:""
+// Search operators like op:"word1 word2" should also be allowed.
 const lexRegex = /([a-zA-Z]+:)?([^\s"]+|"[^"]*"?)/g;
 const lex = (query) => {
 	return (query.match(lexRegex) || []).map(w => closeQuote(w));
@@ -47,8 +31,8 @@ const getQueryObject = function() {
 };
 
 // A lot of the encoding functions for certain search
-// parameters are the same between browsers so put them in
-// separate functions.
+// parameters are the same between search engines so
+// put them in separate functions.
 
 // How Google encodes as_q (where all words must show up once)
 const googleQEncode = function(query) {
