@@ -92,15 +92,16 @@ const googleQuery = function(query, udm14) {
 		as_qdrhi,
 		as_sites,
 	].join(' '));
-	window.location.href = 'https://google.com/search?q=' + queryStr + udm14;
+
+	return 'https://google.com/search?q=' + queryStr;
 }
 
 document.getElementById('query').addEventListener('submit', (ev) => {
 	ev.preventDefault();
 	query = getQueryObject();
+	let url = googleQuery(query);
 	if (query.as_engine == 'udm14') {
-		googleQuery(query, '&udm=14');
-	} else if (query.as_engine == 'google') {
-		googleQuery(query, '');
+		url += '&udm=14';
 	}
+	window.location.href = url;
 });
