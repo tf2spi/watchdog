@@ -1,5 +1,5 @@
 'use strict';
-import {sourcesTranslation, advancedSearches, googleSearchOps} from './index.js.frontmatter';
+import {sourcesTranslation, advancedSearches, googleSearchOps} from './index.frontmatter.js';
 
 const closeQuote = (s) => {
 	return s.includes('"') && s.slice(-1) != '"' ? s.concat('"') : s;
