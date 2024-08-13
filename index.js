@@ -19,6 +19,7 @@ const googleSearchOps = {
 const closeQuote = (s) => {
 	return s.includes('"') && s.slice(-1) != '"' ? s.concat('"') : s;
 }
+
 // Lex words that are space separate and phrases surrounded in quotes
 // Search operators like site:""
 const lexRegex = /([a-zA-Z]+:)?([^\s"]+|"[^"]*"?)/g;
@@ -26,9 +27,7 @@ const lex = (query) => {
 	return (query.match(lexRegex) || []).map(w => closeQuote(w));
 }
 
-document.getElementById('query').addEventListener('submit', (ev) => {
-	ev.preventDefault();
-
+const googleQuery = function(udm14) {
 	let as_keys = {}
 	advancedSearches.forEach(as => as_keys[as] = [
 		document.getElementById(as+'_occt').value,
@@ -59,10 +58,16 @@ document.getElementById('query').addEventListener('submit', (ev) => {
 	occt = googleSearchOps[occt];
 	let as_eq = terms.map(s => '-'+occt+s).join(' ');
 
+	// Date range
 	let as_qdrlo = document.getElementById('as_qdrlo').value;
 	as_qdrlo &&= 'after:'+as_qdrlo;
 	let as_qdrhi = document.getElementById('as_qdrhi').value;
 	as_qdrhi &&= 'before:'+as_qdrhi;
+
+	// Number ranges
+	let as_nlo = document.getElementById('as_nlo').value;
+	let as_nhi = document.getElementById('as_nhi').value;
+	let as_n = (as_nlo || as_nhi) && `${as_nlo}..${as_nhi}`;
 
 	let as_sites = Object.entries(sourcesTranslation)
 		.filter(entry => document.getElementById('source_'+entry[0]).checked)
@@ -71,6 +76,7 @@ document.getElementById('query').addEventListener('submit', (ev) => {
 	as_sites = as_sites && ('('+as_sites+')'); 
 	let query = encodeURIComponent([
 		as_q,
+		as_n,
 		as_oq,
 		as_epq,
 		as_eq,
@@ -78,5 +84,15 @@ document.getElementById('query').addEventListener('submit', (ev) => {
 		as_qdrhi,
 		as_sites,
 	].join(' '));
-	window.location.href = 'https://google.com/search?q=' + query;
+	window.location.href = 'https://google.com/search?q=' + query + udm14;
+}
+
+document.getElementById('query').addEventListener('submit', (ev) => {
+	ev.preventDefault();
+	let as_engine = document.getElementById('as_engine').value;
+	if (as_engine == 'udm14') {
+		googleQuery('&udm=14');
+	} else if (as_engine == 'google') {
+		googleQuery('');
+	}
 });

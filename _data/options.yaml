@@ -34,3 +34,8 @@ source:
   - name: "Associated Press"
     source: ap
     url: apnews.com
+engine:
+  - name: Google
+    engine: google
+  - name: "Google Web"
+    engine: udm14

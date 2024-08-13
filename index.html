@@ -26,6 +26,13 @@
 					and before
 					<input type="date" id="as_qdrhi" name="as_qdrhi" />
 				</li>
+				<li>
+					Numbers between
+					<input type="text" id="as_nlo" name="as_nlo" />
+					and
+					<input type="text" id="as_nhi" name="as_nhi" />
+					(Google Search Only)
+				</li>
 			</ul>
 			<h2>Return results from...</h2>
 			<ul>
@@ -33,6 +40,12 @@
 				{% include source.html source=option.source name=option.name %}
 				{% endfor %}
 			</ul>
+			<h2>Using Search Engine...</h2>
+			<select id="as_engine">
+				{% for option in site.data.options.engine %}
+				{% include engine.html engine=option.engine name=option.name %}
+				{% endfor %}
+			</select>
 			<button type="submit" id="search">Search!</button>
 		</form>
 		<hr />
