@@ -27,54 +27,62 @@ const lex = (query) => {
 	return (query.match(lexRegex) || []).map(w => closeQuote(w));
 }
 
-const googleQuery = function(udm14) {
-	let as_keys = {}
-	advancedSearches.forEach(as => as_keys[as] = [
+// Accumulate common query object variables
+const getQueryObject = function() {
+	let query = {};
+	advancedSearches.forEach(as => query[as] = [
 		document.getElementById(as+'_occt').value,
 		lex(document.getElementById(as).value)
 	]);
+	query['as_sites'] = Object.entries(sourcesTranslation)
+		.filter(entry => document.getElementById('source_'+entry[0]).checked)
+		.map(entry => entry[1]);
+	query['as_qdrlo'] = document.getElementById('as_qdrlo').value
+	query['as_qdrhi'] = document.getElementById('as_qdrhi').value
+	query['as_nlo'] = document.getElementById('as_nlo').value
+	query['as_nhi'] = document.getElementById('as_nhi').value
+	query['as_engine'] = document.getElementById('as_engine').value;
+	return query;
+};
 
+const googleQuery = function(query, udm14) {
 	// Terms which must show up in document
 	let occt, terms;
-	[occt, terms] = as_keys.as_q;
+	[occt, terms] = query.as_q;
 	occt = googleSearchOps[occt];
 	let as_q = terms.map(s => occt+s).join(' ');
 	as_q &&= ('('+as_q+')');
 
 	// Look for exact phrase
-	[occt, terms] = as_keys.as_epq;
+	[occt, terms] = query.as_epq;
 	occt = googleSearchOps[occt];
 	let as_epq = terms.join(' ');
 	as_epq &&= (occt+'"'+terms.join(' ').replaceAll('"','')+'"');
 
         // Terms where any of them appear
-	[occt, terms] = as_keys.as_oq;
+	[occt, terms] = query.as_oq;
 	occt = googleSearchOps[occt];
 	let as_oq = terms.map(s => occt+s).join(' OR ');
 	as_oq &&= ('('+as_oq+')');
 
 	// Terms to be excluded
-	[occt, terms] = as_keys.as_eq;
+	[occt, terms] = query.as_eq;
 	occt = googleSearchOps[occt];
 	let as_eq = terms.map(s => '-'+occt+s).join(' ');
 
 	// Date range
-	let as_qdrlo = document.getElementById('as_qdrlo').value;
-	as_qdrlo &&= 'after:'+as_qdrlo;
-	let as_qdrhi = document.getElementById('as_qdrhi').value;
-	as_qdrhi &&= 'before:'+as_qdrhi;
+	let as_qdrlo = query.as_qdrlo && 'after:'+as_qdrlo;
+	let as_qdrhi = query.as_qdrhi && 'before:'+as_qdrhi;
 
 	// Number ranges
-	let as_nlo = document.getElementById('as_nlo').value;
-	let as_nhi = document.getElementById('as_nhi').value;
-	let as_n = (as_nlo || as_nhi) && `${as_nlo}..${as_nhi}`;
+	let as_n = (query.as_nlo || query.as_nhi) && `${query.as_nlo}..${query.as_nhi}`;
 
-	let as_sites = Object.entries(sourcesTranslation)
-		.filter(entry => document.getElementById('source_'+entry[0]).checked)
-		.map(entry => `site:${entry[1]}`)
+	// Sites to limit the search
+	let as_sites = query.as_sites
+		.map(entry => 'site:'+entry)
 		.join(' OR ');
 	as_sites = as_sites && ('('+as_sites+')'); 
-	let query = encodeURIComponent([
+	let queryStr = encodeURIComponent([
 		as_q,
 		as_n,
 		as_oq,
@@ -84,15 +92,15 @@ const googleQuery = function(udm14) {
 		as_qdrhi,
 		as_sites,
 	].join(' '));
-	window.location.href = 'https://google.com/search?q=' + query + udm14;
+	window.location.href = 'https://google.com/search?q=' + queryStr + udm14;
 }
 
 document.getElementById('query').addEventListener('submit', (ev) => {
 	ev.preventDefault();
-	let as_engine = document.getElementById('as_engine').value;
-	if (as_engine == 'udm14') {
-		googleQuery('&udm=14');
-	} else if (as_engine == 'google') {
-		googleQuery('');
+	query = getQueryObject();
+	if (query.as_engine == 'udm14') {
+		googleQuery(query, '&udm=14');
+	} else if (query.as_engine == 'google') {
+		googleQuery(query, '');
 	}
 });
