@@ -15,18 +15,18 @@
 			Enable it for this site via Chromium or NoScript settings.
 		</noscript>
 		<form action="{{site.baseurl}}/ENABLE_JAVASCRIPT" id="query">
-			<h2>Return results with...</h2>
+			<h2 class="advsearch_header">Return results with...</h2>
 			<ul>
 				{% for option in site.data.options.as %}
 				{% include as.html name=option.name description=option.description options=site.data.options.query %}
 				{% endfor %}
-				<li>
+				<li class="advsearch">
 					Creation date after
 					<input type="date" id="as_qdrlo" name="as_qdrlo" />
 					and before
 					<input type="date" id="as_qdrhi" name="as_qdrhi" />
 				</li>
-				<li>
+				<li class="advsearch">
 					Numbers between
 					<input type="text" id="as_nlo" name="as_nlo" />
 					and
@@ -34,13 +34,13 @@
 					(Google/Ecosia Search Only)
 				</li>
 			</ul>
-			<h2>Return results from...</h2>
+			<h2 class="advsource_header">Return results from...</h2>
 			<ul>
 				{% for option in site.data.options.source %}
 				{% include source.html source=option.source name=option.name %}
 				{% endfor %}
 			</ul>
-			<h2>Using Search Engine...</h2>
+			<h2 class="se_header">Using Search Engine...</h2>
 			<select id="as_engine">
 				{% for option in site.data.options.engine %}
 				{% include engine.html engine=option.engine name=option.name %}
@@ -49,7 +49,7 @@
 			<button type="submit" id="search">Search!</button>
 		</form>
 		<hr />
-		<a href="https://github.com/tf2spi/watchdog.git">Watchdog's Source Code</a>
+		<a class="watchdog_link" href="https://github.com/tf2spi/watchdog.git">Watchdog's Source Code</a>
 		<script src="{{site.baseurl}}/index.frontmatter.js" type='module'></script>
 		<script src="{{site.baseurl}}/index.js" type='module'></script>
 	</body>
